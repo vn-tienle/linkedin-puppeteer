@@ -1,0 +1,23 @@
+{
+  "name": "puppeteer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "linkedin": "./flows/register-linkedin/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "axios": "^1.7.9",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "otplib": "^12.0.1",
+    "prettier": "^3.4.1",
+    "puppeteer": "^23.9.0",
+    "user-agents-generator": "^1.0.2"
+  },
+  "type": "module"
+}

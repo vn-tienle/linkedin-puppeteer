@@ -19,13 +19,14 @@ let browser
 
 try {
   browser = await puppeteer.connect({
-    browserURL: 'http://127.0.0.1:56748',
+    browserURL: 'http://127.0.0.1:51525',
   })
 
   // Check IP
   // await visitIpinfo(browser)
 
   const page = await browser.newPage()
+  await page.deleteCookie()
 
   const dataRow = {
     email: 'tiencmu+1900@gmail.com',

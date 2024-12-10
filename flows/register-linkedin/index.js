@@ -10,8 +10,8 @@ import solvingFunCaptcha from './solving-fun-captcha.js'
 /// START THE PROCESS
 
 // Initial the process
-const width = 800, height = 600
-const chromeUserAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/1182.36 (KHTML, like Gecko) Chrome/76.0.3163.100 Safari/1182.36';
+// const width = 800, height = 600
+// const chromeUserAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/1182.36 (KHTML, like Gecko) Chrome/76.0.3163.100 Safari/1182.36';
 // const pathToExtension = path.resolve('extensions/2captcha-solver-chrome-3.7.2')
 // console.log(pathToExtension);
 
@@ -23,7 +23,7 @@ try {
   })
 
   // Check IP
-  // await visitIpinfo(browser)
+  await visitIpinfo(browser)
 
   const page = await browser.newPage()
   await page.deleteCookie()

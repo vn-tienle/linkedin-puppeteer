@@ -30,10 +30,9 @@ export const createProfile = async (profileData = {
   "webrtc_mode": 2,
   "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
 }) => {
-  console.log(profileData)
-  // const { data: { data } } = await axios.post(GPM_API_URL + '/api/v3/profiles', profileData)
+  const { data: { data } } = await axios.post(GPM_API_URL + '/api/v3/profiles/create', profileData)
 
-  // return data
+  return data
 }
 
 /**

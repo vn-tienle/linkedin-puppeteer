@@ -30,21 +30,25 @@ export default async () => {
 
   // Create GPM profiles
   console.log('Ready to create profiles in GPM Login')
-  const responses = []
+  const savedAccounts = []
 
-  for (const { email, proxy } of accounts) {
-    console.log(`> Email: ${email} | Proxy: ${proxy}`)
+  for (const account of accounts) {
+    console.log(`> Email: ${account.email} | Proxy: ${account.proxy}`)
 
     const res = await createProfile({
-      profile_name: `LinkedIn_${email}`,
-      raw_proxy: proxy,
+      profile_name: `LinkedIn_${account.email}`,
+      raw_proxy: account.proxy,
+      group_name: 'LINKEDIN'
     })
 
-    responses.push(res)
+    savedAccounts.push({
+      ...account,
+      profile: res,
+    })
   }
 
   await exportDataToTempFile(
-    JSON.stringify(responses, null, "  "),
+    JSON.stringify(savedAccounts, null, "  "),
     'profile'
   )
 

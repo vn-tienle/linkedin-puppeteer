@@ -4,7 +4,7 @@
 
 import { Page } from "puppeteer"
 import { wait } from "../../utils/timer.js"
-import { createTaskFunCaptcha, getResultFunCaptcha } from "../../utils/2captcha.js"
+import { createTaskFunCaptcha, getResultFunCaptcha, solveFunCaptcha } from "../../utils/2captcha.js"
 
 /**
  * @param {Page} page
@@ -14,12 +14,20 @@ export default async (page) => {
 
   const userAgent = await page.browser().userAgent()
   console.log('Browser userAgent: ' + userAgent)
-  // await wait(6000)
+  await wait(6000)
 
   // Find CaptchaFrame in the Page
   console.log('> Find CaptchaFrame in the Page')
-  const captchaFrame = await page.frames().find(e => e.name() === 'CaptchaFrame')
-  // console.log(captchaFrame)
+  console.log(page.frames())
+  const captchaFrame = await page.frames().find(async (e) => {
+    console.log(e)
+    const elem = await e.frameElement()
+    if (!elem) return false
+
+    const frameId = await elem.evaluate(f => f.id)
+
+    return frameId == 'CaptchaFrame'
+  })
   await wait(2000)
 
   // Waiting for the presence of #home_children_button
@@ -47,32 +55,33 @@ export default async (page) => {
   console.log('> publicKey:', publicKey)
   console.log('> surl:', decodeURIComponent(surl))
 
-  // Inquiry FunCaptcha
-  console.log('Inquiry FunCaptcha Request:', {
-    pageurl: page.url(),
-    publickey: publicKey,
-    surl: decodeURIComponent(surl),
-  })
-  const task = await createTaskFunCaptcha({
+  // Solving Captcha
+  const captchaPayload = {
     pageurl: page.url(),
     publickey: publicKey,
     surl: decodeURIComponent(surl),
     userAgent,
-  })
-  console.log('Create Task Captcha Request:', task)
+  }
+  console.log('Inquiry FunCaptcha Request:', captchaPayload)
+  const funCaptchaResult = await solveFunCaptcha(captchaPayload)
+  console.log('> FunCaptcha Resolved:', funCaptchaResult)
 
-  // Resolve FunCaptcha
-  let res = await getResultFunCaptcha({ id: task.taskId })
-  if (res.errorId) {
-    throw new Error(res)
+  if (! funCaptchaResult.status) {
+    throw new Error(funCaptchaResult)
   }
 
   // Continue to the next step
   await wait(2000)
   console.log('Fill value to [fc-token] input')
-  await resolveCaptchaFrame.$eval('input[name="fc-token"]', e => e.value = res.solution.token)
+  await resolveCaptchaFrame.evaluate(({ data }) => {
+    document.querySelector('input[name="fc-token"]').value = data
+    console.log(document.querySelector('form'))
+  }, funCaptchaResult)
+  // await resolveCaptchaFrame.type('input[name="fc-token"]', funCaptchaResult.data)
 
-  console.log('Compare the value once again')
-  const reqCaptcha = await resolveCaptchaFrame.$eval('input[name="fc-token"]', e => e.value)
-  console.log('Input Value = ', reqCaptcha)
+  /// Trigger to checkAnswer in 2Captcha
+  const captchaChallengeFrame = await page.frames().find(e => /^https:\/\/www.linkedin.com\/checkpoint\/challengeIframe/.test(e.url()))
+  await captchaChallengeFrame.$eval('#captcha-challenge', e => e.submit())
+
+  await wait(30000)
 }

@@ -18,7 +18,7 @@ export default async ({ profile, browserURL }) => {
     })
 
     // Check IP
-    await visitIpinfo(browser)
+    // await visitIpinfo(browser)
 
     const page = await browser.newPage()
     await page.deleteCookie()

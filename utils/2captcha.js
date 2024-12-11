@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Solver } from '@2captcha/captcha-solver'
 import { TWO_CAPTCHA_API_KEY } from '../config.js'
 import { wait } from './timer.js'
 
@@ -83,4 +84,17 @@ export const getResultFunCaptcha = async ({ id }) => {
   } while (data.status == 'processing' && data.errorId == 0)
 
   return data
+}
+
+export const solveFunCaptcha = async ({ publickey, surl, pageurl, userAgent }) => {
+  const solver = new Solver(TWO_CAPTCHA_API_KEY)
+
+  const result = await solver.funCaptcha({
+    publickey,
+    surl,
+    pageurl,
+    userAgent,
+  })
+
+  return result
 }

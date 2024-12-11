@@ -3,6 +3,9 @@ import { startProfile } from './utils/gpm.js'
 import profiles from './data/profile.json' with { type: 'json' }
 import { wait } from './utils/timer.js'
 
+profiles.shift()
+profiles.shift()
+
 // Get profiles data/profile.json
 for (const account of profiles) {
   // Start profile
@@ -10,7 +13,7 @@ for (const account of profiles) {
 
   const startProfileRes = await startProfile(account.profile.id, {
     addination_args: '',
-    win_scale: '1',
+    win_scale: '0.8',
     win_pos: '0,0',
     win_size: '800,600',
   })

@@ -11,7 +11,7 @@ import { inquiryFunCaptcha, resolveFunCaptcha } from "../../utils/2captcha.js"
  */
 export default async (page) => {
   console.log('== Resolving FunCaptcha')
-  await wait(3000)
+  await wait(6000)
 
   // Find CaptchaFrame in the Page
   console.log('> Find CaptchaFrame in the Page')
@@ -25,15 +25,17 @@ export default async (page) => {
   console.log('> Prepare to resolve FunCaptcha')
   const resolveCaptchaFrame = await page.frames().find(e => /^https:\/\/client-api.arkoselabs.com\/v2/.test(e.url()))
 
-  // Waiting for the presence of data-pkey
-  await resolveCaptchaFrame.waitForSelector('captcha-widget[data-pkey]')
-  const publicKey = await resolveCaptchaFrame.$eval('captcha-widget[data-pkey]', elem => elem.dataset.pkey)
-  console.log('> publickey:', publicKey)
+  // // Waiting for the presence of data-pkey
+  // await resolveCaptchaFrame.waitForSelector('captcha-widget[data-pkey]')
+  // const publicKey = await resolveCaptchaFrame.$eval('captcha-widget[data-pkey]', elem => elem.dataset.pkey)
+  // console.log('> publickey:', publicKey)
 
   // Waiting for the presence of fc-token
   await resolveCaptchaFrame.waitForSelector('input[name="fc-token"]')
   const tokens = await resolveCaptchaFrame.$eval('input[name="fc-token"]', elem => decodeURI(elem.value).split('|'))
+  const publicKey = await tokens.find(e => /^pk=/.test(e)).split('=')[1]
   const surl = await tokens.find(e => /^surl=/.test(e)).split('=')[1]
+  console.log('> publicKey:', publicKey)
   console.log('> surl:', surl)
 
   // Inquiry FunCaptcha

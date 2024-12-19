@@ -38,6 +38,9 @@ export default async (page) => {
     console.log('[ERROR] ' + e.message)
   }
 
+  // Get blob
+  const blob = (await captchaFrame.$eval('#game_challengeItem_image', e => e.src)).substr(23)
+
   // Preparing to resolve FunCaptcha
   console.log('> Prepare to resolve FunCaptcha')
   const resolveCaptchaFrame = await page.frames().find(e => /^https:\/\/client-api.arkoselabs.com\/v2/.test(e.url()))
@@ -61,6 +64,7 @@ export default async (page) => {
     publickey: publicKey,
     surl: decodeURIComponent(surl),
     userAgent,
+    blob,
   }
   console.log('Inquiry FunCaptcha Request:', captchaPayload)
   const funCaptchaResult = await solveFunCaptcha(captchaPayload)
@@ -79,9 +83,9 @@ export default async (page) => {
   }, funCaptchaResult)
   // await resolveCaptchaFrame.type('input[name="fc-token"]', funCaptchaResult.data)
 
-  /// Trigger to checkAnswer in 2Captcha
-  const captchaChallengeFrame = await page.frames().find(e => /^https:\/\/www.linkedin.com\/checkpoint\/challengeIframe/.test(e.url()))
-  await captchaChallengeFrame.$eval('#captcha-challenge', e => e.submit())
+  /// Trigger to checkAnswer in 2Captcha (TODO)
+  // const captchaChallengeFrame = await page.frames().find(e => /^https:\/\/www.linkedin.com\/checkpoint\/challengeIframe/.test(e.url()))
+  // await captchaChallengeFrame.$eval('#captcha-challenge', e => e.submit())
 
   await wait(30000)
 }

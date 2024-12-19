@@ -48,7 +48,7 @@ for (const account of accounts) {
 
   const res = await createProfile({
     profile_name: `LinkedIn_${account.email}`,
-    raw_proxy: account.proxy,
+    // raw_proxy: account.proxy,
     group_name: 'LINKEDIN'
   })
 

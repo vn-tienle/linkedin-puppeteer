@@ -1,2 +1,4 @@
-export const GPM_API_URL = 'http://127.0.0.1:12558'
-export const TWO_CAPTCHA_API_KEY = 'f4dca33ef452ab7423672b7759c9a7d9'
+import 'dotenv/config'
+
+export const GPM_API_URL = process.env.GPM_API_URL || 'http://127.0.0.1:12558'
+export const TWO_CAPTCHA_API_KEY = process.env.TWO_CAPTCHA_API_KEY

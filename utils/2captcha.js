@@ -48,15 +48,18 @@ export const resolveFunCaptcha = async ({ id }) => {
 }
 
 // https://api.2captcha.com/createTask
-export const createTaskFunCaptcha = async ({ publickey, surl, pageurl, userAgent }) => {
+export const createTaskFunCaptcha = async ({ publickey, surl, pageurl, userAgent, blob }) => {
   const { data } = await axios.post('https://api.2captcha.com/createTask', {
     clientKey: TWO_CAPTCHA_API_KEY,
     task: {
       type: "FunCaptchaTaskProxyless",
       websiteURL: pageurl,
       websitePublicKey: publickey,
-      funcaptchaApiJSSubdomain: surl,
+      funcaptchaApiJSSubdomain: (new URL(surl)).host,
       userAgent,
+      data: JSON.stringify({
+        blob,
+      })
     }
   })
 
